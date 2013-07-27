@@ -1,17 +1,33 @@
 <?php
-  $pagepath = 'pages/';
-  $pages = array(
-    "Home" => "home.php",
-    "News" => "news.php",
-    "Features" => "features.php",
-    "Screenshots" => "screenshots.php",
-    "Downloads" => "downloads.php"
-    );
 
-  $page = "Home";
-  if(isset($_GET['page'])) {
-    $page = $_GET['page'];
+  global $mysqli;
+
+  //some database helper functions
+  function db_connect() {
+    $db = new mysqli('localhost','nesemu2','nesemu2','nesemu2');
+    if($db->connect_errno) {
+      die("Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error);
+    }
+    return($db);
   }
+
+  function db_getpages($db) {
+    $pages = array();
+    $r = $db->query("select * from `pages` order by `order`");
+    if($r !== false) {
+      $r->data_seek(0);
+      while($row = $r->fetch_assoc()) {
+        $pages[$row['name']] = $row['file'];
+      }
+    }
+    return($pages);
+  }
+
+  $pagepath = 'pages/';
+
+  $mysqli = db_connect();
+  $pages = db_getpages($mysqli);
+  $page = isset($_GET['page']) ? $_GET['page'] : 'Home';
 
 ?>
 <html>
@@ -22,18 +38,14 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>nesemu2</h1>
-        <p>Cycle accurate NES/Famicom emulator.</p>
-        <ul>
-          <li><a href="https://github.com/holodnak/nesemu2/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/holodnak/nesemu2/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/holodnak/nesemu2">View On <strong>GitHub</strong></a></li>
-        </ul>
+        <?php include('header.php'); ?>
       </header>
       <section>
         <?php
           $i = 0;
           foreach($pages as $name => $file) {
+            if($name == "Admin")
+              continue;
             if($i > 0)
               print(" - ");
             print("<a href=\"?page=$name\">$name</a>");
@@ -42,14 +54,11 @@
         ?>
         <br/>
         <br/>
-        <?php
-          include($pagepath . $pages[$page]);
-        ?>
+        <?php include($pagepath . $pages[$page]); ?>
       </section>
     </div>
     <footer>
-      <p>Project maintained by <a href="https://github.com/holodnak">holodnak</a></p>
-      <p>Theme based on a GitHub pages theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+      <?php include('footer.php'); ?>
     </footer>
   </body>
 </html>
