@@ -19,9 +19,13 @@
   $ cd nesemu2
   $ make
 </pre>
-<p>To build the SDL target, no additional options are required.  If you are on Win32 (or are trying
-  to cross-compile for it) you should use OSTARGET=WIN32 to force the makefile to use the Win32 setup
-  and also you need to use USESDL=0 to disable SDL and build it using the Win32 API.</p>
+<p>To build the SDL target, no additional options are required.  The makefile should auto-detect your OS.  
+  If you are cross compiling for Win32
+  you should use OSTARGET=WIN32 to force the makefile to use the Win32 system.  Regarding Win32 you can
+  disable SDL and use the win32api for the GUI by passing USESDL=0.  For example</p>
+<pre>
+  $ make OSTARGET=WIN32 USESDL=0
+</pre>
 <hr/>
 <h3>Step 3:  Install nesemu2 and its data.</h3>
 <p>nesemu2 comes with additional data in the repository such as:</p>
@@ -33,7 +37,8 @@
   <li><b><a href="http://bootgod.dyndns.org:7777/">NesCartDB</a> XML</b> - Cart Database XML files.</li>
 </ul>
 <p>All of this data is contained in the 'resources' directory.  Running the following command will
-  install nesemu2 and the included data.</p>
+  install nesemu2 and the included data.  The binary is installed into /usr/bin and the shared data
+  will go into /usr/share/nesemu2 </p>
 <pre>
-  $ make install
+  $ sudo make install
 </pre>
