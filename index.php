@@ -11,6 +11,7 @@
     return($db);
   }
 
+  //return array of available pages
   function db_getpages($db) {
     $pages = array();
     $r = $db->query("select * from `pages` order by `order`");
@@ -23,42 +24,23 @@
     return($pages);
   }
 
-  $pagepath = 'pages/';
-
+  //connect to database
   $mysqli = db_connect();
-  $pages = db_getpages($mysqli);
-  $page = isset($_GET['page']) ? $_GET['page'] : 'Home';
+
+  //check for special actions
+  if(isset($_GET['download'])) {
+    include('include/download.php');
+  }
+
+  //must be page action
+  else {
+
+    //default action is to show a page
+    $pages = db_getpages($mysqli);
+    $page = isset($_GET['page']) ? $_GET['page'] : 'Home';
+
+    include('include/page.php');
+  }
 
 ?>
-<html>
-  <head>
-    <title>nesemu2</title>
-    <link rel="stylesheet" href="stylesheets/main.css">
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <?php include('header.php'); ?>
-      </header>
-      <section>
-        <?php
-          $i = 0;
-          foreach($pages as $name => $file) {
-            if($name == "Admin")
-              continue;
-            if($i > 0)
-              print(" - ");
-            print("<a href=\"?page=$name\">$name</a>");
-            $i++;
-          }
-        ?>
-        <br/>
-        <br/>
-        <?php include($pagepath . $pages[$page]); ?>
-      </section>
-    </div>
-    <footer>
-      <?php include('footer.php'); ?>
-    </footer>
-  </body>
-</html>
+
