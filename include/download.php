@@ -2,31 +2,26 @@
 
   global $mysqli;
 
-  $count_downloads_table = 'downloads';
+  $downloads_table = 'downloads';
 
-  $file = $_GET['download'];
-  $ip = $_SERVER['REMOTE_ADDR'];
-  $count = 0;
+  function get_num_downloads($file) {
+    global $downloads_table;
+    global $mysqli;
 
-  $r = $mysqli->query("select * from `$count_downloads_table` where ip = `$ip`");
-
-  if($r !== false) { 
-    print("has downloaded!");
-
+    $r = $mysqli->query("select * from $downloads_table where filename='$file'");
+    return($r->num_rows);
   }
 
-  else {
-    print("not downlaoded (ip = '$ip'  file='$file'  count='$count'");
-    $str = "insert into `$count_downloads_table` values (ip= `$ip`, count=`$count`, file=`$file`)";
+  if(isset($_GET['download'])) {
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $timestamp = $_SERVER['REQUEST_TIME'];
+    $mysqldate = date("Y-m-d H:i:s",$timestamp);
+    $file = $_GET['download'];
+
+    $str = "insert into $downloads_table (ip,filename,date) values ('$ip','$file','$mysqldate')";
     $mysqli->query($str);
+
+    header('Location: /downloads/' . $file);
   }
-
-//  $r = $db->query("select * from `downloads` order by `order`");
-  
-//  $downCount = intval( file_get_contents("downCount") );
-//  $downCount++;
-//  file_put_contents("downCount",$downCount);
-
- // header('Location: /download/' . $file);
 
 ?>
