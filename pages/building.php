@@ -9,7 +9,7 @@
 <h3>Step 1:  Get the source.</h3>
 <p>To get the latest source, ensure you have git installed and clone the repository.</p>
 <pre>
-  $ git clone git@github.com:holodnak/nesemu2.git
+  $ git clone https://github.com/holodnak/nesemu2.git
 </pre>
 <p>This will download the source to the current directory in a directory named 'nesemu2'.</p>
 <hr/>
